@@ -1,13 +1,13 @@
 import tkinter as tk
-currFrame = 0
+currFrame = None
 
 def main():
     root = tk.Tk()
     root.title("Budget Tracker")
     
     #Navigation Bar Frame
-    navbar = tk.Frame(root, width=1000, height=50, bg="lightblue")
-    navbar.pack();
+    navbar = tk.Frame(root, width=1000, height=50, bg="gray")
+    navbar.pack(side=tk.TOP, fill=tk.X)
     navNewEntry = tk.Button(master = navbar, text="New Entry", command=showNewEntry)
     navNewEntry.pack(side=tk.LEFT,padx=5)
     navList = tk.Button(master = navbar, text="Transactions", command=showList)
@@ -16,6 +16,24 @@ def main():
     navSummary.pack(side=tk.LEFT,padx=5)
 
     #New Entry Frame
+    frameNewEntry = tk.Frame(root, width=1000, height=50, bg= "white")
+    frameNewEntry.pack()
+
+    labels = [
+        "Date",
+        "Amount",
+        "Reason",
+        "Type"
+    ]
+    for i, text in enumerate(labels):
+        label = tk.Label(master=frameNewEntry, text=text)
+        entry = tk.Entry(master=frameNewEntry, width=50)
+
+        label.grid(row=i, column=0, sticky="e")
+        entry.grid(row=i, column=1)
+
+    submitNewEntry = tk.Button(master=frameNewEntry, text="Submit")
+    submitNewEntry.grid(row = 5, column = 1)
 
     #Transactions Frame
 
