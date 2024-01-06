@@ -19,8 +19,17 @@ def main():
     navSummary.pack(side=tk.LEFT,padx=5)
 
     #New Entry Frame
+    global frameNewEntry
     frameNewEntry = tk.Frame(root, width=1000, height=50, bg= "white")
     frameNewEntry.pack()
+    currFrame=frameNewEntry
+
+    #Initialize other frames
+    global frameList
+    frameList = tk.Frame(root, width=1000, height=50, bg= "white")
+
+    global frameSummary
+    frameSummary = tk.Frame(root, width=1000, height=50, bg= "white")
 
     global newEntryForm
     newEntryForm=[]
@@ -50,16 +59,34 @@ def main():
 
 #Transition Functions
 def showNewEntry():
-    currFrame.pack_forget()
+    global currFrame, frameList
+    if currFrame != frameNewEntry:
+        if currFrame == frameList:
+            clearFrame(frameList)
+        currFrame.pack_forget()
+        frameNewEntry.pack()
+        currFrame = frameNewEntry
+
 def showList():
-    currFrame.pack_forget()
+    global currFrame
+    if currFrame != frameList:
+        #Hide Previous Frame
+        currFrame.pack_forget()
+        currFrame = frameList
+
+
+        #Populate List
+        with open(entriesFile, newline = '') as csvfile:
+            reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+            for row in reader:
+                entryLine = tk.Label(master=frameList, text=row)
+                entryLine.pack()
+                
+                
+        #Show List
+        frameList.pack()
 def showSummary():
     currFrame.pack_forget()
-
-def show_frame(curr,next):
-    curr.pack_forget()
-    next.pack()
-    currFrame = next
 
 #New Entry Functions
 def submitNewEntry():
@@ -68,10 +95,15 @@ def submitNewEntry():
         value = field.get()
         entryData.append(value)
     print(entryData)
-    with open('entries.csv','w',newline='') as csvfile:
+    with open(entriesFile,'w',newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(entryData)
+
+#Clear Function
+def clearFrame(frame):
+    for widget in frame.winfo_children():
+        widget.destroy() 
 
 if __name__ == "__main__": 
     main()
