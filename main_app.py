@@ -1,7 +1,10 @@
 import tkinter as tk
-currFrame = None
+import csv
+
+entriesFile = "entries.csv"
 
 def main():
+    global currFrame
     root = tk.Tk()
     root.title("Budget Tracker")
     
@@ -19,6 +22,8 @@ def main():
     frameNewEntry = tk.Frame(root, width=1000, height=50, bg= "white")
     frameNewEntry.pack()
 
+    global newEntryForm
+    newEntryForm=[]
     labels = [
         "Date",
         "Amount",
@@ -32,8 +37,10 @@ def main():
         label.grid(row=i, column=0, sticky="e")
         entry.grid(row=i, column=1)
 
-    submitNewEntry = tk.Button(master=frameNewEntry, text="Submit")
-    submitNewEntry.grid(row = 5, column = 1)
+        newEntryForm.append(entry)
+
+    buttonSubmitNew = tk.Button(master=frameNewEntry, text="Submit",command=submitNewEntry)
+    buttonSubmitNew.grid(row = 5, column = 1)
 
     #Transactions Frame
 
@@ -54,6 +61,17 @@ def show_frame(curr,next):
     next.pack()
     currFrame = next
 
+#New Entry Functions
+def submitNewEntry():
+    entryData = []
+    for field in newEntryForm:
+        value = field.get()
+        entryData.append(value)
+    print(entryData)
+    with open('entries.csv','w',newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=' ',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(entryData)
 
 if __name__ == "__main__": 
     main()
